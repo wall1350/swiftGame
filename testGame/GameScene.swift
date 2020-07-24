@@ -34,8 +34,8 @@ class GameScene: SKScene {
         physicsWorld.gravity = CGVector(dx: 0, dy: -9.8)
         buildBoy()
         animateBoy()
-        buildGround()
         buildMonster()
+        buildGround()
     //    view.gestureRecognizers = [UISwipeGestureRecognizer(target: self, action: #selector(swipe))]
         let swipeUp = UISwipeGestureRecognizer()
         swipeUp.addTarget(self, action:#selector(GameScene.swipedUp) )
@@ -65,34 +65,40 @@ class GameScene: SKScene {
     }
     
     func buildMonster() {
-        var multiplierForDirection: CGFloat
-        
         
         let randomMonster = CGFloat.random(in: 0.0 ... self.frame.width)
         monster.size.width = self.frame.width / 8
         monster.size.height = self.frame.height / 6
         monster.position = CGPoint(x: randomMonster, y: 65.0)
         var monsterXTime: CGFloat = monster.position.x / self.frame.width * 6.0
-        SKAction.scaleX(by: CGFloat(1), y: 0.0, duration: TimeInterval(1.0))
-        monster.run(SKAction.sequence([SKAction.move(to:CGPoint(x:0.0,y:65.0),duration:TimeInterval(monsterXTime)),SKAction.repeatForever(SKAction.sequence([SKAction.move(to: CGPoint(x: self.frame.width, y: 65.0), duration: 6.0),SKAction.move(to: CGPoint(x: 0.0, y: 65.0), duration: 6.0)]))]))
-        addChild(monster)
+       
         monster.physicsBody = SKPhysicsBody(rectangleOf: monster.size)
-        monster.physicsBody!.isDynamic = true
+
+        monster.run(SKAction.sequence([SKAction.moveBy(x: 0.0, y: 0, duration: TimeInterval(monsterXTime))]))
+        monster.run(SKAction.repeatForever(SKAction.sequence([SKAction.moveBy(x: self.frame.minX, y: 0, duration: 6), SKAction.moveBy(x: self.frame.maxX, y: 0, duration: 6)])))
+//        monster.run(SKAction.sequence([SKAction.moveBy(x: self.frame.maxX, y: 0, duration: 5)]))
+//        monster.run(SKAction.sequence([SKAction.moveBy(x: self.frame.minX, y: 0, duration: 5)]))
+
+//        monster.physicsBody?.isDynamic = true
+        addChild(monster)
     }
-     
-//
-//
-//    }
     
     func buildGround(){
-        let ground = SKSpriteNode(color: UIColor.blue, size: CGSize.init(width:900, height: 10))
+        let ground = SKSpriteNode(color: UIColor.blue, size: CGSize.init(width:self.frame.width, height: 10))
+        let leftWall = SKSpriteNode(color: UIColor.red, size: CGSize.init(width: 10, height: self.frame.maxY))
+        let rightWall = SKSpriteNode(color: UIColor.red, size: CGSize.init(width: 10, height: self.frame.maxY))
+        leftWall.position = CGPoint(x: 0, y: 0)
+        rightWall.position = CGPoint(x: self.frame.maxX, y: 0)
         ground.position = CGPoint(x: self.frame.midX, y: 0)
+        leftWall.physicsBody = SKPhysicsBody(rectangleOf: leftWall.size)
+        rightWall.physicsBody = SKPhysicsBody(rectangleOf: rightWall.size)
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
+        leftWall.physicsBody?.isDynamic = false
+        rightWall.physicsBody?.isDynamic = false
         ground.physicsBody?.isDynamic = false
-    //    ground.physicsBody?.categoryBitMask = groundBody
-    //    ground.physicsBody?.collisionBitMask = boxBody
-    //    ground.physicsBody?.contactTestBitMask = boxBody
         addChild(ground)
+        addChild(leftWall)
+        addChild(rightWall)
     }
     func buildBoy() {
         let boyAnimatedAtlas = SKTextureAtlas(named: "boyImage")
@@ -110,7 +116,6 @@ class GameScene: SKScene {
         boy.size.height = boy.size.width
         boy.position = CGPoint(x: 500, y: 65)
         boy.physicsBody = SKPhysicsBody(rectangleOf:boy.size)
-        boy.physicsBody!.isDynamic = true
         addChild(boy)
        
     }
