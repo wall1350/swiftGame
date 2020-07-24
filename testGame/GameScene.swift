@@ -31,7 +31,7 @@ class GameScene: SKScene {
         background.size.height = self.frame.height
        
         addChild(background)
-        //    physicsWorld.gravity = CGVector(dx: 0, dy: -9.8)
+        physicsWorld.gravity = CGVector(dx: 0, dy: -9.8)
         buildBoy()
         animateBoy()
         buildGround()
@@ -76,9 +76,10 @@ class GameScene: SKScene {
         SKAction.scaleX(by: CGFloat(1), y: 0.0, duration: TimeInterval(1.0))
         monster.run(SKAction.sequence([SKAction.move(to:CGPoint(x:0.0,y:65.0),duration:TimeInterval(monsterXTime)),SKAction.repeatForever(SKAction.sequence([SKAction.move(to: CGPoint(x: self.frame.width, y: 65.0), duration: 6.0),SKAction.move(to: CGPoint(x: 0.0, y: 65.0), duration: 6.0)]))]))
         addChild(monster)
+        monster.physicsBody = SKPhysicsBody(rectangleOf: monster.size)
+        monster.physicsBody!.isDynamic = true
     }
-//        monster.physicsBody = SKPhysicsBody(rectangleOf: monster.size
-        
+     
 //
 //
 //    }
@@ -109,6 +110,7 @@ class GameScene: SKScene {
         boy.size.height = boy.size.width
         boy.position = CGPoint(x: 500, y: 65)
         boy.physicsBody = SKPhysicsBody(rectangleOf:boy.size)
+        boy.physicsBody!.isDynamic = true
         addChild(boy)
        
     }
